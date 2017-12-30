@@ -224,6 +224,19 @@ class Circuit:
             current_node = t[1]
         return commands+program
 
+    def name(self, index):
+        return str(self.instructions[index].device.name) + str(index)
+
+    #Returns the index of a device with certain name e.g. 'R1'
+    def index(self, name):
+        current_node = self.inst_limit
+        program = ''
+        for device_number,inst in enumerate(self.instructions,1):
+            device = str(inst.device.name)+str(device_number)
+            if(device == name):
+                return device_number
+        return None
+
     def __repr__(self):
         return self.spice('')
 
@@ -241,6 +254,7 @@ class Circuit:
         if r==0:
             #Single instruction mutation
             i = random.choice(self.instructions)
+            print i
             i.mutate(self.parts)
         elif r==1:
             #Exchange two instructions
@@ -302,6 +316,14 @@ class Circuit:
         if self.extra_value != None:
             values.extend(self.extra_value)
         return values
+
+    #set value of a component with certain name
+    def set_value(self, value, index):
+        for i, ins in enumerate(self.instructions, 1):
+            if i == index:
+                ins.device.value = value
+                return value
+        return None
 
     def set_values(self,values):
         i = 0
